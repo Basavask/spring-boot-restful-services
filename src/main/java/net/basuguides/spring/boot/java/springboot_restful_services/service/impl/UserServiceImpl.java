@@ -1,7 +1,9 @@
 package net.basuguides.spring.boot.java.springboot_restful_services.service.impl;
 
 import lombok.AllArgsConstructor;
+import net.basuguides.spring.boot.java.springboot_restful_services.dto.UserDto;
 import net.basuguides.spring.boot.java.springboot_restful_services.entity.User;
+import net.basuguides.spring.boot.java.springboot_restful_services.mapper.UserMapper;
 import net.basuguides.spring.boot.java.springboot_restful_services.respository.UserRepository;
 import net.basuguides.spring.boot.java.springboot_restful_services.service.UserService;
 import org.springframework.stereotype.Service;
@@ -16,8 +18,29 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public User createUser(User user) {
-        return userRepository.save(user);
+    public UserDto createUser(UserDto userDto) {
+
+//        User user = new User(
+//                userDto.getId(),
+//                userDto.getFirstName(),
+//                userDto.getLastName(),
+//                userDto.getEmail()
+//        );
+//
+        // Using Mapper
+        User user = UserMapper.userDTOtoUserJPA(userDto);
+
+         userRepository.save(user);
+
+//         UserDto newUserDto = new UserDto(
+//                 user.getId(),
+//                 user.getFirstName(),
+//                 user.getLastName(),
+//                 user.getEmail()
+//         );
+
+        //using mapper fn
+        return UserMapper.userJPATOUserDto(user);
     }
 
     @Override

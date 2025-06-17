@@ -1,6 +1,7 @@
 package net.basuguides.spring.boot.java.springboot_restful_services.controller;
 
 import lombok.AllArgsConstructor;
+import net.basuguides.spring.boot.java.springboot_restful_services.dto.UserDto;
 import net.basuguides.spring.boot.java.springboot_restful_services.entity.User;
 import net.basuguides.spring.boot.java.springboot_restful_services.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("save")
-    public ResponseEntity<User> createUser(@RequestBody User user){
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto user){
         return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
     }
 
