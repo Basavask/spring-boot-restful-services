@@ -3,6 +3,7 @@ package net.basuguides.spring.boot.java.springboot_restful_services.service.impl
 import lombok.AllArgsConstructor;
 import net.basuguides.spring.boot.java.springboot_restful_services.dto.UserDto;
 import net.basuguides.spring.boot.java.springboot_restful_services.entity.User;
+import net.basuguides.spring.boot.java.springboot_restful_services.expections.UserNotFoundException;
 import net.basuguides.spring.boot.java.springboot_restful_services.mapper.UserMapper;
 import net.basuguides.spring.boot.java.springboot_restful_services.respository.UserRepository;
 import net.basuguides.spring.boot.java.springboot_restful_services.service.UserService;
@@ -28,9 +29,9 @@ public class UserServiceImpl implements UserService {
 //        );
 //
         // Using Mapper
-        User user = UserMapper.userDTOtoUserJPA(userDto);
+//        User user = UserMapper.userDTOtoUserJPA(userDto);
 
-         userRepository.save(user);
+//         userRepository.save(user);
 
 //         UserDto newUserDto = new UserDto(
 //                 user.getId(),
@@ -40,26 +41,34 @@ public class UserServiceImpl implements UserService {
 //         );
 
         //using mapper fn
-        return UserMapper.userJPATOUserDto(user);
+//        return UserMapper.userJPATOUserDto(user);
+
+        // or
+        return  UserMapper.userJPATOUserDto(userRepository.save(UserMapper.userDTOtoUserJPA(userDto)));
     }
 
     @Override
-    public Optional<User> getUserById(Long userId) {
-        return userRepository.findById(userId);
+    public Optional<UserDto> getUserById(Long userId) {
+        // here usermapper acts as this:: where its refers to instance of the class and calling the methods inside
+        // them and map operator return user (User) entity to userJPATOUserDto which will return DTO.
+        return userRepository.findById(userId).map(UserMapper::userJPATOUserDto);
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll().stream().map(UserMapper::userJPATOUserDto).toList();
     }
 
     @Override
-    public User updateUser(User user) {
-        User exisitingUser = userRepository.findById(user.getId()).get();
+    public UserDto updateUser(UserDto user) {
+//        User exisitingUser = userRepository.findById(user.getId()).get(); this will throw warning as optional.get() might be empty.
+        User exisitingUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + user.getId()));
         exisitingUser.setFirstName(user.getFirstName());
         exisitingUser.setLastName(user.getLastName());
         exisitingUser.setEmail(user.getEmail());
-        return userRepository.save(user);
+         userRepository.save(exisitingUser);
+        return UserMapper.userJPATOUserDto(exisitingUser);
     }
 
     @Override
@@ -72,3 +81,4 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 }
+

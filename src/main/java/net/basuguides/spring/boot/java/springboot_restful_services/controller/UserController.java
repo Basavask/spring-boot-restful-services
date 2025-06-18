@@ -2,7 +2,6 @@ package net.basuguides.spring.boot.java.springboot_restful_services.controller;
 
 import lombok.AllArgsConstructor;
 import net.basuguides.spring.boot.java.springboot_restful_services.dto.UserDto;
-import net.basuguides.spring.boot.java.springboot_restful_services.entity.User;
 import net.basuguides.spring.boot.java.springboot_restful_services.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,17 +23,17 @@ public class UserController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Optional<User>> getUserById(@PathVariable("id") Long userId){
+    public ResponseEntity<Optional<UserDto>> getUserById(@PathVariable("id") Long userId){
        return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
     }
 
     @GetMapping("all")
-    public ResponseEntity<List<User>> getAllUsers(){
+    public ResponseEntity<List<UserDto>> getAllUsers(){
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
     @PostMapping("update")
-    public ResponseEntity<User> updateUser(@RequestBody User user) {
+    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto user) {
         return new ResponseEntity<>(userService.updateUser(user), HttpStatus.OK);
     }
 
